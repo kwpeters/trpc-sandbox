@@ -25,6 +25,8 @@ export class AppComponent {
         });
 
         this.message = await client.sayHi.query();
+
+        await client.logToServer.mutate("Hello from the frontend");
     }
 
 }
