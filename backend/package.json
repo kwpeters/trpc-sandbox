@@ -1,0 +1,36 @@
+{
+  "name": "trpc-sandbox-backend",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "start-ts": "npx ts-node ./src/500-bin/www.ts",
+    "start": "node ./dist/500-bin/www.js"
+  },
+  "dependencies": {
+    "@trpc/server": "^10.16.0",
+    "cookie-parser": "~1.4.6",
+    "cors": "^2.8.5",
+    "express": "4.18.2",
+    "lodash": "4.17.21",
+    "morgan": "~1.10.0",
+    "winston": "^3.8.2"
+  },
+  "devDependencies": {
+    "@types/cookie-parser": "^1.4.3",
+    "@types/cors": "^2.8.13",
+    "@types/express": "4.17.17",
+    "@types/jasmine": "^3.10.1",
+    "@types/lodash": "4.14.186",
+    "@types/morgan": "^1.9.4",
+    "@types/node": "^16.18.14",
+    "@types/sprintf-js": "1.1.2",
+    "@typescript-eslint/eslint-plugin": "5.3.0",
+    "@typescript-eslint/parser": "5.3.0",
+    "eslint": "8.1.0",
+    "gulp": "^4.0.2",
+    "jasmine": "^3.10.0",
+    "sprintf-js": "1.1.2",
+    "ts-node": "^10.9.1",
+    "typescript": "^4.9.5"
+  }
+}
