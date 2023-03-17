@@ -3,7 +3,7 @@
     "parser": "@typescript-eslint/parser",
     "parserOptions": {
         "project": [
-            "backend/tsconfig_eslint.json"
+            "tsconfig_eslint.json"
         ]
     },
     "plugins": [
