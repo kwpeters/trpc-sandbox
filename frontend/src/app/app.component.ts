@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { createTRPCProxyClient, httpBatchLink } from "@trpc/client";
-import { TrpcRouter } from "../../../backend/src/400-app/routes/sampleTrpc";
+import { TrpcRouter } from "../../../backend/src/400-app/routes/trpcRoot";
+import { IUser } from '../../../backend/src/400-app/routes/trpcUser';
 
 @Component({
     selector: 'app-root',
@@ -10,10 +11,13 @@ import { TrpcRouter } from "../../../backend/src/400-app/routes/sampleTrpc";
 export class AppComponent {
     title = 'trpc-sandbox-frontend';
 
-    public message: string | undefined;
+    public queryResult: string | undefined;
+    public mutationRetVal: boolean | undefined;
+    public user: IUser | undefined;
+
 
     public constructor() {
-        this.message = "message not initialized"
+        this.queryResult = "message not initialized"
     }
 
 
@@ -24,9 +28,13 @@ export class AppComponent {
             })]
         });
 
-        this.message = await client.sayHi.query();
+        // Calling the server's query procedure.
+        this.queryResult = await client.sayHi.query();
 
-        await client.logToServer.mutate("Hello from the frontend");
+        // Calling the server's mutate procedure.
+        this.mutationRetVal = await client.logToServer.mutate("Hello from the frontend");
+
+        // An example of calling a procedure on a nested router.
+        this.user = await client.users.getUser.query();
     }
-
 }

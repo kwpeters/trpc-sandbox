@@ -1,5 +1,6 @@
 import { createExpressMiddleware } from "@trpc/server/adapters/express";
 import { trpc } from "../trpc";
+import { userRouter } from "./trpcUser";
 
 const trpcRouter = trpc.router(
     {
@@ -17,12 +18,10 @@ const trpcRouter = trpc.router(
             return true;
         }),
 
-        // Can nest routers within this one by adding additional entries where
-        // the key is the path the router will be attached under.
+        // Nest the tRPC user router at the path "/users/...".
+        users: userRouter
     }
 );
 
-
 export const middleware = createExpressMiddleware({ router: trpcRouter });
-
 export type TrpcRouter = typeof trpcRouter;

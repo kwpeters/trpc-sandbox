@@ -5,7 +5,7 @@ import cors, {CorsOptions} from "cors";
 import { router as indexRouter } from "./routes/index";
 import { router as usersRouter } from "./routes/users";
 import { morganMiddleware } from "./morganMiddleware";
-import { middleware as trpcMiddleware } from "./routes/sampleTrpc";
+import { middleware as trpcMiddleware } from "./routes/trpcRoot";
 
 export const app = express();
 
