@@ -1,7 +1,8 @@
 import { Component } from '@angular/core';
-import { createTRPCProxyClient, httpBatchLink, loggerLink } from "@trpc/client";
+import { createTRPCProxyClient, httpBatchLink, loggerLink, createWSClient, wsLink, splitLink } from "@trpc/client";
 import { TrpcRouter } from "../../../backend/src/400-app/routes/trpcRoot";
 import { IUser } from '../../../backend/src/400-app/routes/trpcUser';
+
 
 @Component({
     selector: 'app-root',
@@ -24,19 +25,49 @@ export class AppComponent {
 
 
     public async ngOnInit(): Promise<void> {
+
+        const wsClient = createWSClient({ url: "ws://localhost:3000/trpc" });
+
         const client = createTRPCProxyClient<TrpcRouter>({
             // Links are a lot like Express middleware in that they are invoked
             // sequentially until an ending link (that sends the request) is
             // encountered.
             links: [
                 loggerLink(),
-                // httpLink() will only send one request to the server at a
-                // time.
-                httpBatchLink({
-                    url: "http://localhost:3000/trpc",
-                    headers: {Authorization: "TOKEN"}
-                }
-            )]
+                // HTTP-only link
+                // // httpLink() will only send one request to the server at a
+                // // time.
+                // httpBatchLink({
+                //     url: "http://localhost:3000/trpc",
+                //     headers: {Authorization: "TOKEN"}
+                // }),
+
+                // Websocket-only link
+                // // wsLink(
+                // //     {
+                // //         client: createWSClient({url: "ws://localhost:3000/trpc"})
+                // //     }
+                // // ),
+
+                // When using both HTTP and websocket servers.
+                splitLink(
+                    {
+                        condition: (op) => op.type === "subscription",
+                        true: wsLink(
+                            {
+                                client: wsClient
+                            }
+                        ),
+                        false: httpBatchLink(
+                            {
+                                url: "http://localhost:3000/trpc",
+                                headers: {Authorization: "TOKEN"}
+                            }
+                        ),
+                    }
+                )
+
+            ]
         });
 
         // Calling the server's query procedure.
@@ -52,5 +83,24 @@ export class AppComponent {
         this.updatedUser = await client.users.update.mutate({userId: "1234", name: "Ryan"});
 
         this.secretData = await client.secretData.query();
+
+        // Subscribe to the websocket.
+        const connection = client.users.onUpdate.subscribe(
+            undefined,   // Nothing to pass in
+            {
+                onData: (id) => {
+                    // This code will be invoked whenever the server publishes a
+                    // new value to the subscription.  This can be in response
+                    // to other users' actions.
+                    console.log(`subscription onData() -> ${id}`);
+                }
+            }
+        );
+
+        // When done listening for these events, do:
+        connection.unsubscribe();
+        // ... or, to close everything down:
+        // close();
+
     }
 }

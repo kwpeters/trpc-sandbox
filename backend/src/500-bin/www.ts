@@ -4,6 +4,9 @@ import * as http from "http";
 import { app } from "../400-app/app";
 import { ISystemError } from "../100-lib/depot/nodeTypes";
 import { logger } from "../200-util/logger";
+import { applyWSSHandler } from "@trpc/server/adapters/ws";
+import { trpcRouter } from "../400-app/routes/trpcRoot";
+import ws from "ws";
 
 
 /**
@@ -26,6 +29,19 @@ const server = http.createServer(app);
 server.listen(port);
 server.on("error", onError);
 server.on("listening", onListening);
+
+applyWSSHandler(
+    {
+        wss:           new ws.Server({server}),
+        router:        trpcRouter,
+        // Note:  When using websockets, you don't have the normal request and
+        // response parameters.
+        createContext: () => {
+            return { isAdmin: true };
+        }
+    }
+);
+
 
 /**
  * Normalize a port into a number, string, or false.

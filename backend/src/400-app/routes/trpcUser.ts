@@ -1,6 +1,7 @@
 import { trpc } from "../trpc";
 import { z } from "zod";
-
+import { observable } from "@trpc/server/observable";
+import { EventEmitter } from "stream";
 
 export interface IUser {
     id: string,
@@ -12,6 +13,9 @@ export interface IUser {
 const userProcedure = trpc.procedure.input(
     z.object({ userId: z.string()})
 );
+
+
+const eventEmitter = new EventEmitter();
 
 // A tRPC router for users.
 // Not to be confused with the Express users router.
@@ -36,8 +40,19 @@ export const userRouter = trpc.router(
             .mutation((req) => {
                 console.log(`req.ctx = ${req.ctx}`);
                 console.log(`Updating user ${req.input.userId} to have the name ${req.input.name}`);
+                eventEmitter.emit("update", req.input.userId);
                 return {id: req.input.userId, name: req.input.name};
-            })
+            }),
+        onUpdate: trpc.procedure.subscription(() => {
+            return observable<string>((emit) => {
+                eventEmitter.on("update", emit.next);
+
+                // Return a function that can be used to close.
+                return () => {
+                    eventEmitter.off("update", emit.next);
+                };
+            });
+        })
     }
 );
 

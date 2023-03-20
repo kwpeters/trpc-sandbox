@@ -4,7 +4,7 @@ import { createContext } from "../context";
 import { userRouter } from "./trpcUser";
 
 
-const trpcRouter = trpc.router(
+export const trpcRouter = trpc.router(
     {
         sayHi:       trpc.procedure.query((_req) => "Hi"),
         logToServer: trpc.procedure.input((v) => {
