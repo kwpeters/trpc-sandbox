@@ -46,6 +46,4 @@ app.use(express.static(path.join(__dirname, "../assets")));
 
 app.use("/", indexRouter);
 app.use("/users", usersRouter);
-
-
 app.use("/trpc", trpcMiddleware);
