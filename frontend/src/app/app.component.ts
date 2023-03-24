@@ -1,7 +1,9 @@
 import { Component } from '@angular/core';
 import { createTRPCProxyClient, httpBatchLink, loggerLink, createWSClient, wsLink, splitLink } from "@trpc/client";
-import { TrpcRouter } from "../../../backend/src/400-app/routes/trpcRoot";
-import { IUser } from '../../../backend/src/400-app/routes/trpcUser';
+
+// Import the *types* from the backend.
+import type { TrpcRouter } from "../../../backend/src/400-app/routes/trpcRoot";
+import type { IUser } from '../../../backend/src/400-app/routes/trpcUser';
 
 
 @Component({
