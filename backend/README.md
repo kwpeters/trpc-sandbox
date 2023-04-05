@@ -3,5 +3,5 @@
 ## Running
 
 ```powershell
-npx ts-node .\src\bin\www.ts
+npx ts-node .\src\500-bin\www.ts
 ```
